@@ -6,7 +6,7 @@ import ShareableLink from '@/components/ShareableLink';
 import MessageDisplay from '@/components/MessageDisplay';
 import BackgroundGradient from '@/components/BackgroundGradient';
 import AdPlaceholder from '@/components/AdPlaceholder';
-import { KeyRound } from 'lucide-react';
+import { KeyRound, MessageSquare } from 'lucide-react';
 import { 
   createNewDare, 
   hasActiveDare, 
@@ -96,25 +96,18 @@ const Index = () => {
       
       <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
         <header className="text-center mb-8">
-          <div className="flex justify-center items-center mb-2">
-            <img 
-              src="https://placeholder.pics/svg/40x40/8B5CF6/FFFFFF-8B5CF6/EnderHOST" 
-              alt="EnderHOST" 
-              className="w-10 h-10 mr-2" 
-            />
-            <h1 className="text-4xl font-bold relative inline-block text-gradient-glow">
-              <span className="animate-float inline-block">😱</span>
-              <span className="mx-2">Your Friends Have Something to Say... Anonymously</span>
-              <span className="animate-float inline-block">😱</span>
-            </h1>
-          </div>
+          <h1 className="text-4xl font-bold relative inline-block text-gradient-glow mb-3">
+            <MessageSquare className="w-8 h-8 inline-block mr-2 mb-1" />
+            <span>Your Friends Have Something to Say... Anonymously</span>
+            <span className="animate-float inline-block ml-2">😱</span>
+          </h1>
           <p className="text-purple-200 text-lg">
             Create your own secret message dare & watch what happens!
           </p>
         </header>
         
         {/* Top Ad Space */}
-        <AdPlaceholder position="top" />
+        <AdPlaceholder position="top" className="mb-8" />
 
         <main className="flex-1 flex flex-col items-center space-y-8">
           {!hasExistingDare ? (
@@ -160,7 +153,7 @@ const Index = () => {
                 </div>
                 
                 {/* Middle Ad Space */}
-                {messages.length > 2 && <AdPlaceholder position="middle" className="my-4" />}
+                {messages.length > 2 && <AdPlaceholder position="middle" className="mb-6" />}
                 
                 <MessageDisplay messages={messages} />
               </div>
@@ -173,14 +166,14 @@ const Index = () => {
 
         <footer className="mt-12 text-center text-sm text-purple-300 py-4">
           <div className="flex justify-center space-x-4 mb-2">
-            <a href="https://discord.gg/enderhost" target="_blank" rel="noopener noreferrer" className="hover:text-purple-200">💬 Discord</a>
-            <a href="mailto:support@enderhost.in" className="hover:text-purple-200">📧 Support</a>
+            <a href="https://discord.gg/enderhost" target="_blank" rel="noopener noreferrer" className="hover:text-purple-200 transition-colors">💬 Discord</a>
+            <a href="mailto:support@enderhost.in" className="hover:text-purple-200 transition-colors">📧 Support</a>
           </div>
-          <p>Made with curiosity & mystery by <a href="https://enderhost.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-200">EnderHOST</a> 💖</p>
+          <p>Made with curiosity & mystery by <a href="https://enderhost.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-200 transition-colors">EnderHOST</a> 💖</p>
           <div className="flex justify-center space-x-3 mt-2 text-xs text-purple-400">
-            <a href="#" className="hover:text-purple-300">Terms</a>
-            <a href="#" className="hover:text-purple-300">Privacy</a>
-            <a href="#" className="hover:text-purple-300">About</a>
+            <a href="#" className="hover:text-purple-300 transition-colors">Terms</a>
+            <a href="#" className="hover:text-purple-300 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-purple-300 transition-colors">About</a>
           </div>
         </footer>
       </div>
