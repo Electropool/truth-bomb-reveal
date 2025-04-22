@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MessageForm from '@/components/MessageForm';
 import { toast } from '@/components/ui/sonner';
 import BackgroundGradient from '@/components/BackgroundGradient';
+import AdPlaceholder from '@/components/AdPlaceholder';
 
 const SendMessage = () => {
   const { dareId } = useParams<{ dareId: string }>();
@@ -25,9 +26,9 @@ const SendMessage = () => {
 
   if (isValidDare === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
         <div className="animate-pulse text-center">
-          <p className="text-xl">Loading...</p>
+          <p className="text-xl text-purple-300">Loading...</p>
         </div>
       </div>
     );
@@ -38,26 +39,29 @@ const SendMessage = () => {
   }
 
   return (
-    <div className="min-h-screen font-rounded">
+    <div className="min-h-screen font-rounded text-white">
       <BackgroundGradient />
       <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            <span className="animate-float inline-block">👀</span>
-            <span className="mx-2">Truth Bomb</span>
-            <span className="animate-float inline-block">👀</span>
+          <h1 className="text-4xl font-bold mb-2 text-gradient-glow">
+            <span className="animate-float inline-block">😱</span>
+            <span className="mx-2">Secret Message</span>
+            <span className="animate-float inline-block">😱</span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            Someone dared you to be honest!
+          <p className="text-xl text-purple-200">
+            Someone is waiting for your honesty...
           </p>
         </header>
 
+        {/* Top Ad Space */}
+        <AdPlaceholder position="top" />
+
         <main className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-full max-w-md p-6 bg-white rounded-xl shadow-sm border-2 border-primary/10 animate-bounce-in">
-            <h2 className="text-2xl font-bold text-center mb-6">
+          <div className="w-full max-w-md p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg border-2 border-purple-500/20 animate-bounce-in">
+            <h2 className="text-2xl font-bold text-center mb-6 text-gradient-glow">
               Send an Anonymous Message
             </h2>
-            <p className="text-center text-muted-foreground mb-6">
+            <p className="text-center text-purple-200 mb-6">
               Your message will be 100% anonymous. They'll never know who sent it! 🤫
             </p>
             
@@ -65,8 +69,11 @@ const SendMessage = () => {
           </div>
         </main>
 
-        <footer className="mt-12 text-center text-sm text-muted-foreground py-4">
-          <p>Made with fun &amp; honesty 💖</p>
+        {/* Bottom Ad Space */}
+        <AdPlaceholder position="bottom" className="mt-8" />
+
+        <footer className="mt-12 text-center text-sm text-purple-300 py-4">
+          <p>Made with curiosity & mystery 💖</p>
         </footer>
       </div>
     </div>

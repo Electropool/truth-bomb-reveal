@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import ShareableLink from '@/components/ShareableLink';
 import MessageDisplay from '@/components/MessageDisplay';
 import BackgroundGradient from '@/components/BackgroundGradient';
+import AdPlaceholder from '@/components/AdPlaceholder';
 import { 
   createNewDare, 
   hasActiveDare, 
@@ -65,42 +66,45 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
         <div className="animate-pulse text-center">
-          <p className="text-xl">Loading...</p>
+          <p className="text-xl text-purple-300">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen font-rounded">
+    <div className="min-h-screen font-rounded text-white">
       <BackgroundGradient />
       <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 relative inline-block">
-            <span className="animate-float inline-block">👀</span>
-            <span className="mx-2">Can You Handle the Truth?</span>
-            <span className="animate-float inline-block">👀</span>
+          <h1 className="text-4xl font-bold mb-2 relative inline-block text-gradient-glow">
+            <span className="animate-float inline-block">😱</span>
+            <span className="mx-2">Your Friends Have Something to Say... Anonymously</span>
+            <span className="animate-float inline-block">😱</span>
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Get anonymous messages from your friends.
+          <p className="text-purple-200 text-lg">
+            Create your own secret message dare & watch what happens!
           </p>
         </header>
+        
+        {/* Top Ad Space */}
+        <AdPlaceholder position="top" />
 
         <main className="flex-1 flex flex-col items-center space-y-8">
           {!hasExistingDare ? (
             <div className="flex flex-col items-center text-center space-y-6 py-8 w-full animate-bounce-in">
-              <p className="text-xl">
-                Create your own truth dare and share it with friends!
+              <p className="text-xl text-purple-100">
+                Ready to know what your friends <strong>really</strong> think about you?
               </p>
               <div className="flex gap-4 mt-4">
                 <Button 
                   onClick={handleCreateDare}
-                  className="py-6 px-8 text-xl font-bold"
+                  className="py-6 px-8 text-xl font-bold neon-button"
                   size="lg"
                 >
-                  Start Your Dare
+                  🎯 Start Your Dare
                 </Button>
               </div>
             </div>
@@ -110,12 +114,13 @@ const Index = () => {
               
               <div className="w-full mt-8">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold">Your Messages</h2>
+                  <h2 className="text-xl font-bold text-purple-100">Your Secret Messages</h2>
                   <div className="flex gap-2">
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={handleRefreshMessages}
+                      className="border-purple-500 text-purple-200 hover:bg-purple-900"
                     >
                       Refresh
                     </Button>
@@ -123,19 +128,27 @@ const Index = () => {
                       variant="ghost" 
                       size="sm"
                       onClick={handleResetDare}
+                      className="text-pink-300 hover:bg-pink-900/30"
                     >
                       Reset
                     </Button>
                   </div>
                 </div>
+                
+                {/* Middle Ad Space */}
+                {messages.length > 2 && <AdPlaceholder position="middle" className="my-4" />}
+                
                 <MessageDisplay messages={messages} />
               </div>
             </>
           )}
         </main>
 
-        <footer className="mt-12 text-center text-sm text-muted-foreground py-4">
-          <p>Made with fun &amp; honesty 💖</p>
+        {/* Bottom Ad Space */}
+        <AdPlaceholder position="bottom" className="mt-8" />
+
+        <footer className="mt-12 text-center text-sm text-purple-300 py-4">
+          <p>Made with curiosity & mystery 💖</p>
         </footer>
       </div>
     </div>

@@ -52,7 +52,7 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
         <div className="space-y-2">
           <label 
             htmlFor="message" 
-            className="text-lg font-semibold flex items-center gap-2"
+            className="text-lg font-semibold flex items-center gap-2 text-purple-200"
           >
             <MessageSquare className="w-5 h-5" />
             Write your anonymous message:
@@ -62,18 +62,18 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Be honest, they can handle it! 👀"
-            className="w-full p-3 rounded-lg border-2 border-muted min-h-[120px] focus:border-primary focus:ring-primary"
+            className="w-full p-3 rounded-lg border-2 border-purple-500/30 bg-gray-900/70 text-white min-h-[120px] focus:border-purple-500 focus:ring-purple-500 placeholder-purple-400"
             maxLength={200}
             required
           />
-          <div className="text-xs text-right text-muted-foreground">
+          <div className="text-xs text-right text-purple-400">
             {message.length}/200 characters
           </div>
         </div>
         
         <Button 
           type="submit" 
-          className="w-full py-6 text-lg font-bold flex items-center gap-2"
+          className="w-full py-6 text-lg font-bold flex items-center gap-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg"
           disabled={sending || !message.trim()}
         >
           <Send className="w-5 h-5" />
@@ -83,14 +83,14 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
       
       <div className="text-center space-y-2">
         <div className="relative flex items-center">
-          <div className="flex-grow border-t border-muted"></div>
-          <span className="flex-shrink mx-4 text-muted-foreground">Want to try it yourself?</span>
-          <div className="flex-grow border-t border-muted"></div>
+          <div className="flex-grow border-t border-purple-500/30"></div>
+          <span className="flex-shrink mx-4 text-purple-400">Want to try it yourself?</span>
+          <div className="flex-grow border-t border-purple-500/30"></div>
         </div>
         
         <Button
           variant="outline"
-          className="w-full"
+          className="w-full border-purple-500/30 text-purple-200 hover:bg-purple-800/30 hover:border-purple-500"
           onClick={createMyOwnDare}
         >
           Create My Own Dare

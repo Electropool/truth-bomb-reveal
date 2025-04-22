@@ -1,8 +1,9 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -98,6 +99,36 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gray-900 text-foreground;
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+  .text-gradient-glow {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-400;
+    text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+  }
+  
+  .neon-button {
+    @apply bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-pink-500/30 hover:scale-105;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(139, 92, 246, 0.5);
+    border-radius: 3px;
   }
 }
