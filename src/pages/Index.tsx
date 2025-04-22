@@ -88,7 +88,7 @@ const Index = () => {
       {/* Admin Login Button */}
       <div className="fixed top-4 right-4 z-10">
         <Link to="/admin">
-          <Button variant="ghost" size="sm" className="text-purple-300 hover:bg-purple-900/30">
+          <Button variant="ghost" size="sm" className="text-purple-200 hover:bg-purple-900/40 shadow-sm">
             <KeyRound className="w-4 h-4 mr-1" /> Admin
           </Button>
         </Link>
@@ -96,12 +96,12 @@ const Index = () => {
       
       <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold relative inline-block text-gradient-glow mb-3">
+          <h1 className="text-4xl font-bold relative inline-block text-gradient-glow mb-3 drop-shadow-lg">
             <MessageSquare className="w-8 h-8 inline-block mr-2 mb-1" />
             <span>Your Friends Have Something to Say... Anonymously</span>
             <span className="animate-float inline-block ml-2">😱</span>
           </h1>
-          <p className="text-purple-200 text-lg">
+          <p className="text-purple-100 text-lg drop-shadow-md">
             Create your own secret message dare & watch what happens!
           </p>
         </header>
@@ -112,13 +112,13 @@ const Index = () => {
         <main className="flex-1 flex flex-col items-center space-y-8">
           {!hasExistingDare ? (
             <div className="flex flex-col items-center text-center space-y-6 py-8 w-full animate-bounce-in">
-              <p className="text-xl text-purple-100">
+              <p className="text-xl text-purple-100 drop-shadow-md">
                 Ready to know what your friends <strong>really</strong> think about you?
               </p>
               <div className="flex gap-4 mt-4">
                 <Button 
                   onClick={handleCreateDare}
-                  className="py-6 px-8 text-xl font-bold neon-button"
+                  className="py-6 px-8 text-xl font-bold neon-button text-white shadow-lg"
                   size="lg"
                 >
                   🎯 Start Your Dare
@@ -131,13 +131,13 @@ const Index = () => {
               
               <div className="w-full mt-8">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-bold text-purple-100">Your Secret Messages</h2>
+                  <h2 className="text-xl font-bold text-purple-100 drop-shadow-md">Your Secret Messages</h2>
                   <div className="flex gap-2">
                     <Button 
                       variant="outline" 
                       size="sm" 
                       onClick={handleRefreshMessages}
-                      className="border-purple-500 text-purple-200 hover:bg-purple-900"
+                      className="border-purple-500/40 text-purple-100 hover:bg-purple-900/40 shadow-sm"
                     >
                       Refresh
                     </Button>
@@ -145,7 +145,7 @@ const Index = () => {
                       variant="ghost" 
                       size="sm"
                       onClick={handleResetDare}
-                      className="text-pink-300 hover:bg-pink-900/30"
+                      className="text-pink-200 hover:bg-pink-900/40 shadow-sm"
                     >
                       Reset
                     </Button>
@@ -164,16 +164,16 @@ const Index = () => {
         {/* Bottom Ad Space */}
         <AdPlaceholder position="bottom" className="mt-8" />
 
-        <footer className="mt-12 text-center text-sm text-purple-300 py-4">
+        <footer className="mt-12 text-center text-sm text-purple-200 py-4">
           <div className="flex justify-center space-x-4 mb-2">
-            <a href="https://discord.gg/enderhost" target="_blank" rel="noopener noreferrer" className="hover:text-purple-200 transition-colors">💬 Discord</a>
-            <a href="mailto:support@enderhost.in" className="hover:text-purple-200 transition-colors">📧 Support</a>
+            <a href="https://discord.gg/enderhost" target="_blank" rel="noopener noreferrer" className="hover:text-purple-100 transition-colors">💬 Discord</a>
+            <a href="mailto:support@enderhost.in" className="hover:text-purple-100 transition-colors">📧 Support</a>
           </div>
-          <p>Made with curiosity & mystery by <a href="https://enderhost.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-200 transition-colors">EnderHOST</a> 💖</p>
-          <div className="flex justify-center space-x-3 mt-2 text-xs text-purple-400">
-            <a href="#" className="hover:text-purple-300 transition-colors">Terms</a>
-            <a href="#" className="hover:text-purple-300 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-purple-300 transition-colors">About</a>
+          <p>Made with curiosity & mystery by <a href="https://enderhost.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-100 transition-colors">EnderHOST</a> 💖</p>
+          <div className="flex justify-center space-x-3 mt-2 text-xs text-purple-300">
+            <a href="#" className="hover:text-purple-200 transition-colors">Terms</a>
+            <a href="#" className="hover:text-purple-200 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-purple-200 transition-colors">About</a>
           </div>
         </footer>
       </div>
