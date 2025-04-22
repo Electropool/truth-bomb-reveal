@@ -13,6 +13,11 @@ const BackgroundGradient = () => {
       <div className="absolute top-40 right-20 w-80 h-80 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: "2s" }} />
       <div className="absolute bottom-40 left-20 w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: "3s" }} />
       <div className="absolute bottom-60 right-40 w-60 h-60 bg-violet-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: "4s" }} />
+      
+      {/* EnderHOST branding element */}
+      <div className="absolute bottom-4 right-4 text-xs text-purple-300 opacity-50">
+        Powered by <a href="https://enderhost.in" target="_blank" rel="noopener noreferrer" className="underline hover:text-purple-200">EnderHOST</a>
+      </div>
     </div>
   );
 };
