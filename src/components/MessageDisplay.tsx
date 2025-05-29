@@ -1,27 +1,23 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DareMessage } from '@/utils/dareUtils';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
+import TimestampModal from './TimestampModal';
 
 interface MessageDisplayProps {
   messages: DareMessage[];
 }
 
 const MessageDisplay: React.FC<MessageDisplayProps> = ({ messages }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<DareMessage | null>(null);
+
   const handleViewHint = (messageId: string) => {
-    // Simple timestamp display without premium features
     const message = messages.find(msg => msg.id === messageId);
     if (message) {
-      const timestamp = new Date(message.timestamp).toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      alert(`Message sent on: ${timestamp}`);
+      setSelectedMessage(message);
+      setIsModalOpen(true);
     }
   };
 
@@ -60,7 +56,28 @@ const MessageDisplay: React.FC<MessageDisplayProps> = ({ messages }) => {
             <p className="text-lg font-medium text-white drop-shadow-sm">{msg.message}</p>
           </div>
         ))}
+        
+        {/* Ad Space Between Messages */}
+        {messages.length > 2 && (
+          <div className="flex justify-center my-6">
+            <AdPlaceholder 
+              position="middle" 
+              size="728x90" 
+              showReal={true}
+            />
+          </div>
+        )}
       </div>
+
+      {/* Timestamp Modal */}
+      {selectedMessage && (
+        <TimestampModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          timestamp={selectedMessage.timestamp}
+          messageId={selectedMessage.id}
+        />
+      )}
     </div>
   );
 };
