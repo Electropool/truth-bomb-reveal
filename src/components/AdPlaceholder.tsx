@@ -1,5 +1,6 @@
 
 import React from 'react';
+import AdBlock from './AdBlock';
 
 interface AdPlaceholderProps {
   position: 'top' | 'middle' | 'bottom';
@@ -14,7 +15,7 @@ const AdPlaceholder: React.FC<AdPlaceholderProps> = ({
   size = '320x50',
   showReal = false 
 }) => {
-  const getAdScript = (adSize: string) => {
+  const getAdConfig = (adSize: string) => {
     switch (adSize) {
       case '320x50':
         return {
@@ -43,48 +44,16 @@ const AdPlaceholder: React.FC<AdPlaceholderProps> = ({
     }
   };
 
-  const adConfig = getAdScript(size);
-
-  React.useEffect(() => {
-    if (showReal) {
-      // Load the ad script
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.innerHTML = `
-        atOptions = {
-          'key' : '${adConfig.key}',
-          'format' : 'iframe',
-          'height' : ${adConfig.height},
-          'width' : ${adConfig.width},
-          'params' : {}
-        };
-      `;
-      document.head.appendChild(script);
-
-      const invokeScript = document.createElement('script');
-      invokeScript.type = 'text/javascript';
-      invokeScript.src = `//curledpastpatty.com/${adConfig.key}/invoke.js`;
-      document.head.appendChild(invokeScript);
-
-      return () => {
-        document.head.removeChild(script);
-        document.head.removeChild(invokeScript);
-      };
-    }
-  }, [showReal, adConfig]);
+  const adConfig = getAdConfig(size);
 
   if (showReal) {
     return (
-      <div className={`flex justify-center items-center ${className}`}>
-        <div 
-          style={{ 
-            width: `${adConfig.width}px`, 
-            height: `${adConfig.height}px`,
-            maxWidth: '100%'
-          }}
-          className="ad-container"
-        />
-      </div>
+      <AdBlock
+        adKey={adConfig.key}
+        width={adConfig.width}
+        height={adConfig.height}
+        className={className}
+      />
     );
   }
 

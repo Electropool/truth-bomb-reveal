@@ -4,6 +4,7 @@ import { DareMessage } from '@/utils/dareUtils';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import TimestampModal from './TimestampModal';
+import AdPlaceholder from './AdPlaceholder';
 
 interface MessageDisplayProps {
   messages: DareMessage[];
