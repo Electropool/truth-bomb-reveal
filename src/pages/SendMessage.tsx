@@ -41,8 +41,8 @@ const SendMessage = () => {
   return (
     <div className="min-h-screen font-rounded text-white">
       <BackgroundGradient />
-      <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
-        <header className="text-center mb-8">
+      <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen items-center">
+        <header className="text-center mb-8 w-full">
           <h1 className="text-4xl font-bold mb-2 text-gradient-glow drop-shadow-lg">
             <span className="animate-float inline-block">😱</span>
             <span className="mx-2">Secret Message</span>
@@ -54,9 +54,11 @@ const SendMessage = () => {
         </header>
 
         {/* Top Ad Space */}
-        <AdPlaceholder position="top" />
+        <div className="w-full flex justify-center mb-8">
+          <AdPlaceholder position="top" size="320x50" />
+        </div>
 
-        <main className="flex-1 flex flex-col items-center justify-center">
+        <main className="flex-1 flex flex-col items-center justify-center w-full">
           <div className="w-full max-w-md p-6 bg-gray-800/60 backdrop-blur-md rounded-xl shadow-lg border-2 border-purple-500/30 animate-bounce-in">
             <h2 className="text-2xl font-bold text-center mb-6 text-gradient-glow drop-shadow-md">
               Send an Anonymous Message
@@ -70,9 +72,11 @@ const SendMessage = () => {
         </main>
 
         {/* Bottom Ad Space */}
-        <AdPlaceholder position="bottom" className="mt-8" />
+        <div className="w-full flex justify-center mt-8">
+          <AdPlaceholder position="bottom" size="728x90" />
+        </div>
 
-        <footer className="mt-12 text-center text-sm text-purple-200 py-4">
+        <footer className="mt-12 text-center text-sm text-purple-200 py-4 w-full">
           <p>Made with curiosity & mystery 💖</p>
         </footer>
       </div>

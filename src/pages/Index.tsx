@@ -15,20 +15,15 @@ import {
   DareMessage,
   clearDare 
 } from '@/utils/dareUtils';
-import { getPremiumStatus } from '@/utils/premiumUtils';
 
 const Index = () => {
   const [dareId, setDareId] = useState<string | null>(null);
   const [messages, setMessages] = useState<DareMessage[]>([]);
   const [hasExistingDare, setHasExistingDare] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     checkExistingDare();
-    
-    const premiumStatus = getPremiumStatus();
-    setIsPremium(premiumStatus.active);
   }, []);
 
   const checkExistingDare = () => {
@@ -94,8 +89,8 @@ const Index = () => {
         </Link>
       </div>
       
-      <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen">
-        <header className="text-center mb-8">
+      <div className="container max-w-md mx-auto py-8 px-4 flex flex-col min-h-screen items-center">
+        <header className="text-center mb-8 w-full">
           <h1 className="text-4xl font-bold relative inline-block text-gradient-glow mb-3 drop-shadow-lg">
             <MessageSquare className="w-8 h-8 inline-block mr-2 mb-1" />
             <span>Your Friends Have Something to Say... Anonymously</span>
@@ -107,15 +102,17 @@ const Index = () => {
         </header>
         
         {/* Top Ad Space */}
-        <AdPlaceholder position="top" className="mb-8" />
+        <div className="w-full flex justify-center mb-8">
+          <AdPlaceholder position="top" size="320x50" />
+        </div>
 
-        <main className="flex-1 flex flex-col items-center space-y-8">
+        <main className="flex-1 flex flex-col items-center space-y-8 w-full">
           {!hasExistingDare ? (
             <div className="flex flex-col items-center text-center space-y-6 py-8 w-full animate-bounce-in">
               <p className="text-xl text-purple-100 drop-shadow-md">
                 Ready to know what your friends <strong>really</strong> think about you?
               </p>
-              <div className="flex gap-4 mt-4">
+              <div className="flex justify-center mt-4">
                 <Button 
                   onClick={handleCreateDare}
                   className="py-6 px-8 text-xl font-bold neon-button text-white shadow-lg"
@@ -127,7 +124,9 @@ const Index = () => {
             </div>
           ) : (
             <>
-              <ShareableLink dareId={dareId || ''} />
+              <div className="w-full flex justify-center">
+                <ShareableLink dareId={dareId || ''} />
+              </div>
               
               <div className="w-full mt-8">
                 <div className="flex justify-between items-center mb-4">
@@ -153,7 +152,11 @@ const Index = () => {
                 </div>
                 
                 {/* Middle Ad Space */}
-                {messages.length > 2 && <AdPlaceholder position="middle" className="mb-6" />}
+                {messages.length > 2 && (
+                  <div className="w-full flex justify-center mb-6">
+                    <AdPlaceholder position="middle" size="300x250" />
+                  </div>
+                )}
                 
                 <MessageDisplay messages={messages} />
               </div>
@@ -162,9 +165,11 @@ const Index = () => {
         </main>
 
         {/* Bottom Ad Space */}
-        <AdPlaceholder position="bottom" className="mt-8" />
+        <div className="w-full flex justify-center mt-8">
+          <AdPlaceholder position="bottom" size="728x90" />
+        </div>
 
-        <footer className="mt-12 text-center text-sm text-purple-200 py-4">
+        <footer className="mt-12 text-center text-sm text-purple-200 py-4 w-full">
           <div className="flex justify-center space-x-4 mb-2">
             <a href="https://discord.gg/enderhost" target="_blank" rel="noopener noreferrer" className="hover:text-purple-100 transition-colors">💬 Discord</a>
             <a href="mailto:support@enderhost.in" className="hover:text-purple-100 transition-colors">📧 Support</a>
