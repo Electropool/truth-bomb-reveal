@@ -69,10 +69,31 @@ export interface DareMessage {
 
 export const saveMessage = async (dareId: string, message: string): Promise<void> => {
   try {
-    await apiClient.sendMessage(dareId, message);
-  } catch (error) {
+    console.log('Attempting to save message:', { dareId, messageLength: message.length });
+    
+    const response = await apiClient.sendMessage(dareId, message);
+    console.log('Message save response:', response);
+    
+  } catch (error: any) {
     console.error('Error saving message:', error);
-    throw new Error('Failed to send message. Please try again.');
+    
+    // Check if it's a duplicate message error (409)
+    if (error.message.includes('409') || error.message.includes('already sent')) {
+      throw new Error('You have already sent a message for this dare');
+    }
+    
+    // Check if it's a dare not found error (404)
+    if (error.message.includes('404') || error.message.includes('not found')) {
+      throw new Error('This dare link is invalid or has expired');
+    }
+    
+    // Check if it's a connection error
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Cannot connect to server. Please check your internet connection.');
+    }
+    
+    // Generic error
+    throw new Error(`Failed to send message: ${error.message}`);
   }
 };
 
@@ -107,7 +128,9 @@ export const clearDare = async (): Promise<void> => {
 // Validate if a dare exists
 export const validateDare = async (dareId: string): Promise<boolean> => {
   try {
+    console.log('Validating dare:', dareId);
     const response = await apiClient.checkDare(dareId);
+    console.log('Dare validation response:', response);
     return response.exists;
   } catch (error) {
     console.error('Error validating dare:', error);

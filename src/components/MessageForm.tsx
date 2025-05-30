@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -24,27 +25,38 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
       return;
     }
     
+    console.log('Attempting to send message for dare:', dareId);
+    console.log('Message content:', message.trim());
+    
     setSending(true);
     
     try {
       await saveMessage(dareId, message.trim());
       
-      // Show success alert instead of just a toast
+      console.log('Message sent successfully');
       setShowSuccess(true);
-      
       setMessage('');
       setSending(false);
     } catch (error: any) {
       console.error('Error saving message:', error);
-      
-      // Handle specific error messages from the server
-      if (error.message.includes('already sent')) {
-        toast.error('You have already sent a message for this dare');
-      } else {
-        toast.error('Something went wrong. Please try again.');
-      }
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
       
       setSending(false);
+      
+      // Handle specific error messages from the server
+      if (error.message.includes('already sent') || error.message.includes('409')) {
+        toast.error('You have already sent a message for this dare');
+      } else if (error.message.includes('404') || error.message.includes('not found')) {
+        toast.error('This dare link is invalid or has expired');
+      } else if (error.message.includes('Cannot connect') || error.message.includes('fetch')) {
+        toast.error('Cannot connect to server. Please check your internet connection.');
+      } else {
+        toast.error(`Failed to send message: ${error.message}`);
+      }
     }
   };
   
@@ -83,7 +95,7 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
           disabled={sending || !message.trim()}
         >
           <Send className="w-5 h-5" />
-          Send Anonymous Message
+          {sending ? 'Sending...' : 'Send Anonymous Message'}
         </Button>
       </form>
       

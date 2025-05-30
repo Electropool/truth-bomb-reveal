@@ -3,13 +3,15 @@
 
 // In production, try to auto-detect the API URL if not set
 const getApiUrl = (): string => {
-  // Check if we have an explicit API URL set
-  if (process.env.REACT_APP_API_URL) {
-    return process.env.REACT_APP_API_URL;
+  // Check if we have an explicit API URL set via environment variable
+  if (typeof window !== 'undefined' && (window as any).REACT_APP_API_URL) {
+    return (window as any).REACT_APP_API_URL;
   }
   
   // In production, use the same domain with /api path
-  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  if (typeof window !== 'undefined' && 
+      window.location.hostname !== 'localhost' && 
+      window.location.hostname !== '127.0.0.1') {
     return `${window.location.protocol}//${window.location.host}/api`;
   }
   
@@ -43,6 +45,7 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     
     console.log('Making API request to:', url);
+    console.log('Request options:', options);
     
     const config: RequestInit = {
       headers: {
@@ -54,12 +57,22 @@ class ApiClient {
     try {
       const response = await fetch(url, config);
       console.log('API response status:', response.status);
+      console.log('API response headers:', Object.fromEntries(response.headers.entries()));
       
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('Failed to parse JSON response:', jsonError);
+        throw new Error('Invalid response from server');
+      }
+      
       console.log('API response data:', data);
 
       if (!response.ok) {
-        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+        const errorMessage = data.error || `HTTP error! status: ${response.status}`;
+        console.error('API error response:', errorMessage);
+        throw new Error(errorMessage);
       }
 
       return data;
@@ -67,6 +80,12 @@ class ApiClient {
       console.error('API request failed:', error);
       console.error('Request URL:', url);
       console.error('Request config:', config);
+      
+      // Provide more specific error information
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Network error: Cannot reach the server');
+      }
+      
       throw error;
     }
   }
