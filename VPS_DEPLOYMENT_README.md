@@ -56,7 +56,7 @@ EXIT;
 
 ### Import database schema
 ```bash
-mysql -u dare_user -p dare_messages < /path/to/your/project/server/database.sql
+mysql -u dare_user -p dare_messages < /var/www/secretmsg/server/database.sql
 ```
 
 ## 3. Application Deployment
@@ -64,15 +64,19 @@ mysql -u dare_user -p dare_messages < /path/to/your/project/server/database.sql
 ### Clone your repository
 ```bash
 cd /var/www
-sudo git clone https://github.com/yourusername/your-repo-name.git dare-app
-sudo chown -R $USER:$USER /var/www/dare-app
-cd /var/www/dare-app
+sudo git clone https://github.com/yourusername/your-repo-name.git secretmsg
+sudo chown -R $USER:$USER /var/www/secretmsg
+cd /var/www/secretmsg
 ```
 
-### Setup Backend
+### Setup Backend (CRITICAL - Install Dependencies First!)
 ```bash
 cd server
+# Install all backend dependencies
 npm install
+
+# Verify installation
+npm list
 ```
 
 ### Create environment file
@@ -90,9 +94,16 @@ DB_NAME=dare_messages
 PORT=3001
 ```
 
+### Test backend manually first
+```bash
+# Test if the server runs without PM2
+node server.js
+```
+If you see "Connected to MySQL database" and "Server running on port 3001", press Ctrl+C and continue.
+
 ### Setup Frontend
 ```bash
-cd ..
+cd /var/www/secretmsg
 npm install
 ```
 
@@ -116,17 +127,27 @@ npm run build
 
 ### Start backend with PM2
 ```bash
-cd server
-pm2 start server.js --name "dare-backend"
+cd /var/www/secretmsg/server
+
+# Make sure we're in the right directory with dependencies
+pwd
+ls -la node_modules/
+
+# Start with PM2
+pm2 start server.js --name "secretmsg"
 pm2 save
 pm2 startup
+
+# Check if it's running
+pm2 status
+pm2 logs secretmsg
 ```
 
 ## 5. Nginx Configuration
 
 ### Create Nginx configuration
 ```bash
-sudo nano /etc/nginx/sites-available/dare-app
+sudo nano /etc/nginx/sites-available/secretmsg
 ```
 
 Add this configuration:
@@ -137,7 +158,7 @@ server {
 
     # Frontend (React build)
     location / {
-        root /var/www/dare-app/dist;
+        root /var/www/secretmsg/dist;
         index index.html index.htm;
         try_files $uri $uri/ /index.html;
     }
@@ -159,7 +180,7 @@ server {
 
 ### Enable the site
 ```bash
-sudo ln -s /etc/nginx/sites-available/dare-app /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/secretmsg /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -184,32 +205,76 @@ sudo ufw allow ssh
 sudo ufw enable
 ```
 
-## 8. Automatic Updates and Monitoring
+## 8. Troubleshooting Common Issues
+
+### If PM2 shows "errored" status:
+
+1. **Check if dependencies are installed:**
+```bash
+cd /var/www/secretmsg/server
+ls -la node_modules/
+```
+
+2. **If node_modules is missing, install dependencies:**
+```bash
+npm install
+```
+
+3. **Check if .env file exists and has correct values:**
+```bash
+cat .env
+```
+
+4. **Test database connection:**
+```bash
+mysql -u dare_user -p dare_messages -e "SHOW TABLES;"
+```
+
+5. **Restart PM2 after fixing issues:**
+```bash
+pm2 restart secretmsg
+pm2 logs secretmsg
+```
+
+### If getting "MODULE_NOT_FOUND" error:
+```bash
+cd /var/www/secretmsg/server
+rm -rf node_modules package-lock.json
+npm install
+pm2 restart secretmsg
+```
+
+## 9. Automatic Updates and Monitoring
 
 ### Create update script
 ```bash
-nano /var/www/dare-app/update.sh
+nano /var/www/secretmsg/update.sh
 ```
 
 Add this content:
 ```bash
 #!/bin/bash
-cd /var/www/dare-app
+cd /var/www/secretmsg
 git pull origin main
+
+# Update frontend
 npm install
 npm run build
+
+# Update backend
 cd server
 npm install
-pm2 restart dare-backend
+pm2 restart secretmsg
+
 echo "Application updated successfully!"
 ```
 
 ### Make it executable
 ```bash
-chmod +x /var/www/dare-app/update.sh
+chmod +x /var/www/secretmsg/update.sh
 ```
 
-## 9. Testing
+## 10. Testing
 
 ### Check if services are running
 ```bash
@@ -220,27 +285,28 @@ sudo systemctl status mysql
 
 ### Test the API
 ```bash
+curl http://localhost:3001/api/health
 curl http://yourdomain.com/api/health
 ```
 
 ### Access your application
 Visit `http://yourdomain.com` (or `https://yourdomain.com` if SSL is configured)
 
-## 10. Maintenance Commands
+## 11. Maintenance Commands
 
 ### View backend logs
 ```bash
-pm2 logs dare-backend
+pm2 logs secretmsg
 ```
 
 ### Restart backend
 ```bash
-pm2 restart dare-backend
+pm2 restart secretmsg
 ```
 
 ### Update application
 ```bash
-cd /var/www/dare-app
+cd /var/www/secretmsg
 ./update.sh
 ```
 
@@ -249,22 +315,28 @@ cd /var/www/dare-app
 mysqldump -u dare_user -p dare_messages > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
-## Troubleshooting
+## Quick Fix for Current Error
 
-### If the API is not working:
-1. Check PM2 status: `pm2 status`
-2. Check backend logs: `pm2 logs dare-backend`
-3. Check if port 3001 is listening: `netstat -tlnp | grep 3001`
+If you're currently getting the PM2 error, run these commands:
 
-### If frontend is not loading:
-1. Check Nginx status: `sudo systemctl status nginx`
-2. Check Nginx error logs: `sudo tail -f /var/log/nginx/error.log`
-3. Verify build files exist: `ls -la /var/www/dare-app/dist/`
+```bash
+# Stop PM2 process
+pm2 stop secretmsg
+pm2 delete secretmsg
 
-### If database connection fails:
-1. Check MySQL status: `sudo systemctl status mysql`
-2. Test database connection: `mysql -u dare_user -p dare_messages`
-3. Check environment variables in `/var/www/dare-app/server/.env`
+# Go to server directory and install dependencies
+cd /var/www/secretmsg/server
+npm install
+
+# Verify dependencies are installed
+ls -la node_modules/express
+ls -la node_modules/mysql2
+
+# Start again
+pm2 start server.js --name "secretmsg"
+pm2 save
+pm2 logs secretmsg
+```
 
 ## Security Notes
 
@@ -274,13 +346,4 @@ mysqldump -u dare_user -p dare_messages > backup_$(date +%Y%m%d_%H%M%S).sql
 4. Regularly backup your database
 5. Monitor your server resources
 
-## Support
-
-If you encounter any issues:
-1. Check the logs for error messages
-2. Ensure all services are running
-3. Verify your environment configuration
-4. Check firewall settings
-
 Your Dare messaging app should now be fully functional with global message persistence!
-```
