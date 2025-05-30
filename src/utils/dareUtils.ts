@@ -1,3 +1,5 @@
+import { apiClient } from './apiClient';
+
 // Utility functions for dare website
 
 // Generate a unique ID for user sessions (keeping for compatibility)
