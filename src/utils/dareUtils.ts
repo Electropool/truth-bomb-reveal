@@ -1,3 +1,4 @@
+
 import { apiClient } from './apiClient';
 
 // Utility functions for dare website
@@ -11,9 +12,22 @@ export const generateUniqueId = (): string => {
 // Store a new user session
 export const createNewDare = async (): Promise<string> => {
   try {
+    console.log('Creating new dare...');
+    
+    // First, test if the API is reachable with a health check
+    try {
+      await apiClient.healthCheck();
+      console.log('API health check passed');
+    } catch (healthError) {
+      console.error('API health check failed:', healthError);
+      throw new Error('Cannot connect to server. Please check if the backend is running.');
+    }
+    
     const response = await apiClient.createDare();
     const sessionId = response.dareId;
     const timestamp = new Date().toISOString();
+    
+    console.log('Dare created successfully:', sessionId);
     
     // Store in localStorage for user session tracking
     localStorage.setItem('myDareId', sessionId);
@@ -22,6 +36,16 @@ export const createNewDare = async (): Promise<string> => {
     return sessionId;
   } catch (error) {
     console.error('Error creating dare:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Cannot connect to server. Please check your internet connection.');
+    }
+    
+    if (error.message.includes('Cannot connect to server')) {
+      throw error; // Re-throw our custom health check error
+    }
+    
     throw new Error('Failed to create dare. Please try again.');
   }
 };
