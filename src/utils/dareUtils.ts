@@ -1,25 +1,27 @@
-
 // Utility functions for dare website
 
-// Generate a unique ID for user sessions
+// Generate a unique ID for user sessions (keeping for compatibility)
 export const generateUniqueId = (): string => {
   return Math.random().toString(36).substring(2, 15) + 
          Math.random().toString(36).substring(2, 15);
 };
 
 // Store a new user session
-export const createNewDare = (): string => {
-  const sessionId = generateUniqueId();
-  const timestamp = new Date().toISOString();
-  
-  // Store in localStorage
-  localStorage.setItem('myDareId', sessionId);
-  localStorage.setItem('myDareCreatedAt', timestamp);
-  
-  // Initialize empty messages array
-  localStorage.setItem(`messages_${sessionId}`, JSON.stringify([]));
-  
-  return sessionId;
+export const createNewDare = async (): Promise<string> => {
+  try {
+    const response = await apiClient.createDare();
+    const sessionId = response.dareId;
+    const timestamp = new Date().toISOString();
+    
+    // Store in localStorage for user session tracking
+    localStorage.setItem('myDareId', sessionId);
+    localStorage.setItem('myDareCreatedAt', timestamp);
+    
+    return sessionId;
+  } catch (error) {
+    console.error('Error creating dare:', error);
+    throw new Error('Failed to create dare. Please try again.');
+  }
 };
 
 // Check if current user has an active dare
@@ -39,36 +41,52 @@ export interface DareMessage {
   timestamp: string;
 }
 
-export const saveMessage = (dareId: string, message: string): void => {
-  const messagesKey = `messages_${dareId}`;
-  const existingMessagesJSON = localStorage.getItem(messagesKey) || '[]';
-  const existingMessages: DareMessage[] = JSON.parse(existingMessagesJSON);
-  
-  const newMessage: DareMessage = {
-    id: generateUniqueId(),
-    message,
-    timestamp: new Date().toISOString()
-  };
-  
-  existingMessages.push(newMessage);
-  localStorage.setItem(messagesKey, JSON.stringify(existingMessages));
+export const saveMessage = async (dareId: string, message: string): Promise<void> => {
+  try {
+    await apiClient.sendMessage(dareId, message);
+  } catch (error) {
+    console.error('Error saving message:', error);
+    throw new Error('Failed to send message. Please try again.');
+  }
 };
 
 // Get all messages for a specific dare
-export const getMessages = (dareId: string): DareMessage[] => {
-  const messagesKey = `messages_${dareId}`;
-  const messagesJSON = localStorage.getItem(messagesKey) || '[]';
-  return JSON.parse(messagesJSON);
+export const getMessages = async (dareId: string): Promise<DareMessage[]> => {
+  try {
+    const response = await apiClient.getMessages(dareId);
+    return response.messages;
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    return [];
+  }
 };
 
 // Clear a dare session
-export const clearDare = (): void => {
+export const clearDare = async (): Promise<void> => {
   const dareId = localStorage.getItem('myDareId');
-  if (dareId) {
-    localStorage.removeItem(`messages_${dareId}`);
+  
+  try {
+    if (dareId) {
+      await apiClient.deleteDare(dareId);
+    }
+  } catch (error) {
+    console.error('Error deleting dare:', error);
+  } finally {
+    // Always clear localStorage
+    localStorage.removeItem('myDareId');
+    localStorage.removeItem('myDareCreatedAt');
   }
-  localStorage.removeItem('myDareId');
-  localStorage.removeItem('myDareCreatedAt');
+};
+
+// Validate if a dare exists
+export const validateDare = async (dareId: string): Promise<boolean> => {
+  try {
+    const response = await apiClient.checkDare(dareId);
+    return response.exists;
+  } catch (error) {
+    console.error('Error validating dare:', error);
+    return false;
+  }
 };
 
 // Format a shareable URL for a dare

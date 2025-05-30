@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import MessageForm from '@/components/MessageForm';
 import { toast } from '@/components/ui/sonner';
 import BackgroundGradient from '@/components/BackgroundGradient';
 import AdPlaceholder from '@/components/AdPlaceholder';
+import { validateDare } from '@/utils/dareUtils';
 
 const SendMessage = () => {
   const { dareId } = useParams<{ dareId: string }>();
@@ -19,16 +19,28 @@ const SendMessage = () => {
       return;
     }
     
-    // In a real app, we'd verify the dare ID with the server here
-    // For now, we'll just assume it's valid if it exists
-    setIsValidDare(true);
+    // Validate dare with server
+    validateDare(dareId).then((exists) => {
+      if (!exists) {
+        setIsValidDare(false);
+        toast.error("This dare link is invalid or has expired");
+        navigate('/');
+      } else {
+        setIsValidDare(true);
+      }
+    }).catch((error) => {
+      console.error('Error validating dare:', error);
+      setIsValidDare(false);
+      toast.error("Unable to validate dare link");
+      navigate('/');
+    });
   }, [dareId, navigate]);
 
   if (isValidDare === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
         <div className="animate-pulse text-center">
-          <p className="text-xl text-purple-200 drop-shadow-md">Loading...</p>
+          <p className="text-xl text-purple-200 drop-shadow-md">Validating dare link...</p>
         </div>
       </div>
     );

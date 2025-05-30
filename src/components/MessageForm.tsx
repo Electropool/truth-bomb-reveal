@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!message.trim()) {
@@ -28,16 +27,23 @@ const MessageForm = ({ dareId }: MessageFormProps) => {
     setSending(true);
     
     try {
-      saveMessage(dareId, message.trim());
+      await saveMessage(dareId, message.trim());
       
       // Show success alert instead of just a toast
       setShowSuccess(true);
       
       setMessage('');
       setSending(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving message:', error);
-      toast.error('Something went wrong. Please try again.');
+      
+      // Handle specific error messages from the server
+      if (error.message.includes('already sent')) {
+        toast.error('You have already sent a message for this dare');
+      } else {
+        toast.error('Something went wrong. Please try again.');
+      }
+      
       setSending(false);
     }
   };

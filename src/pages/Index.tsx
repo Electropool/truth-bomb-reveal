@@ -7,6 +7,7 @@ import MessageDisplay from '@/components/MessageDisplay';
 import BackgroundGradient from '@/components/BackgroundGradient';
 import AdPlaceholder from '@/components/AdPlaceholder';
 import { KeyRound, MessageSquare } from 'lucide-react';
+import { toast } from '@/components/ui/sonner';
 import { 
   createNewDare, 
   hasActiveDare, 
@@ -21,12 +22,13 @@ const Index = () => {
   const [messages, setMessages] = useState<DareMessage[]>([]);
   const [hasExistingDare, setHasExistingDare] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingDare, setIsCreatingDare] = useState(false);
 
   useEffect(() => {
     checkExistingDare();
   }, []);
 
-  const checkExistingDare = () => {
+  const checkExistingDare = async () => {
     setIsLoading(true);
     
     const hasDare = hasActiveDare();
@@ -37,32 +39,58 @@ const Index = () => {
       setDareId(currentDareId);
       
       if (currentDareId) {
-        const dareMessages = getMessages(currentDareId);
-        setMessages(dareMessages);
+        try {
+          const dareMessages = await getMessages(currentDareId);
+          setMessages(dareMessages);
+        } catch (error) {
+          console.error('Error loading messages:', error);
+          toast.error('Failed to load messages');
+        }
       }
     }
     
     setIsLoading(false);
   };
 
-  const handleCreateDare = () => {
-    const newDareId = createNewDare();
-    setDareId(newDareId);
-    setHasExistingDare(true);
-    setMessages([]);
+  const handleCreateDare = async () => {
+    setIsCreatingDare(true);
+    try {
+      const newDareId = await createNewDare();
+      setDareId(newDareId);
+      setHasExistingDare(true);
+      setMessages([]);
+      toast.success('Dare created successfully!');
+    } catch (error) {
+      console.error('Error creating dare:', error);
+      toast.error('Failed to create dare. Please try again.');
+    } finally {
+      setIsCreatingDare(false);
+    }
   };
 
-  const handleResetDare = () => {
-    clearDare();
-    setDareId(null);
-    setMessages([]);
-    setHasExistingDare(false);
+  const handleResetDare = async () => {
+    try {
+      await clearDare();
+      setDareId(null);
+      setMessages([]);
+      setHasExistingDare(false);
+      toast.success('Dare reset successfully!');
+    } catch (error) {
+      console.error('Error resetting dare:', error);
+      toast.error('Failed to reset dare');
+    }
   };
 
-  const handleRefreshMessages = () => {
+  const handleRefreshMessages = async () => {
     if (dareId) {
-      const updatedMessages = getMessages(dareId);
-      setMessages(updatedMessages);
+      try {
+        const updatedMessages = await getMessages(dareId);
+        setMessages(updatedMessages);
+        toast.success('Messages refreshed!');
+      } catch (error) {
+        console.error('Error refreshing messages:', error);
+        toast.error('Failed to refresh messages');
+      }
     }
   };
 
@@ -117,8 +145,9 @@ const Index = () => {
                   onClick={handleCreateDare}
                   className="py-6 px-8 text-xl font-bold neon-button text-white shadow-lg"
                   size="lg"
+                  disabled={isCreatingDare}
                 >
-                  🎯 Start Your Dare
+                  {isCreatingDare ? 'Creating...' : '🎯 Start Your Dare'}
                 </Button>
               </div>
             </div>
